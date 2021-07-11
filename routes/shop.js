@@ -6,8 +6,8 @@ const adminData = require("./admin");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  console.log("shop.js", adminData.products);
-  res.sendFile(path.join(fileDir, "views", "index.html"));
+  const products = adminData.products;
+  res.render("index", {products, docTitle: "My Shop"});
 });
 
 module.exports = router;
