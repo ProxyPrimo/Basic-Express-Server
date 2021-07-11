@@ -6,7 +6,7 @@ const fileDir = require("../util/path");
 const router = express.Router();
 
 router.use((req, res) => {
-    res.status(404).sendFile(path.join(fileDir, "views", "404.html"));
+    res.status(404).render("404");
 });
 
 
