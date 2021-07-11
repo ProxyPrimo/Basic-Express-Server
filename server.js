@@ -1,34 +1,30 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 
 const app = express();
 
-// app.use('/', (req, res, next) => {
-//     console.log("In the middleware!");
-//     res.send("<h1>Hello from Express middleware!</h1>")
-// });
+app.use(bodyParser.urlencoded({extended: false}));
 
-// app.use((req, res, next) => {
-//   console.log("Logging info");
-//   next();
-// });
-
-// app.use((req, res, next) => {
-//   next();
-// });
-
-// app.use((req, res, next) => {
-//   res.send("Sending a response to the client");
-// });
-
-app.use("/add-product", (req, res, next) => {
-  res.send("<h1>Hello from Express Add Product middleware!</h1>");
+app.get("/add-product", (req, res) => {
+  res.send(`
+  <form action="/add-product" method="POST">
+    <input type="text" name="title">
+        <button type="submit">Submit</button>
+    </input>
+  </form>`
+  );
 });
 
-app.use("/users", (req, res, next) => {
+app.post("/add-product", (req, res) => {
+    console.log(req.body.title);
+    res.redirect("/");
+});
+
+app.use("/users", (req, res) => {
   res.send("<h1>Hello from the Users page</h1>");
 });
 
-app.use("/", (req, res, next) => {
+app.use("/", (req, res) => {
   res.send("<h1>Hello from the Index page</h1>");
 });
 
