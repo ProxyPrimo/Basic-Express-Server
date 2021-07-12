@@ -8,7 +8,14 @@ exports.getAddProduct = (req, res) => {
 };
 
 exports.postAddProduct = (req, res) => {
-  const product = new Product(req.body.title);
+  const values = {
+    title: req.body.title,
+    imageUrl: req.body.imageUrl,
+    description: req.body.description,
+    price: req.body.price,
+  };
+
+  const product = new Product(...values);
   product.save();
   res.redirect("/");
 };
@@ -22,5 +29,3 @@ exports.getProducts = (req, res) => {
     });
   });
 };
-
-
