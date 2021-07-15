@@ -32,6 +32,7 @@ module.exports = class Product {
         const existingProductIndex = products.findIndex(
           (p) => p.id === this.id
         );
+        console.log(existingProductIndex, id);
         products[existingProductIndex] = this;
       } else {
         products.push(this);
@@ -42,18 +43,15 @@ module.exports = class Product {
     });
   }
 
-  static delete(id) {
+  static deleteById(id) {
     getProductsFromFile((products) => {
       if (id) {
-        const existingProductIndex = products.findIndex(
-          (p) => p.id === this.id
-        );
-        products.splice(products.indexOf(existingProductIndex), 1);
-        fs.writeFile(p, JSON.stringify(products), (err) => {
+        const updatedProducts = products.filter((p) => p.id !== id);
+        fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
           console.log(err);
         });
       }
-    })
+    });
   }
   static fetchAll(cb) {
     getProductsFromFile(cb);
