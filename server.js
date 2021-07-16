@@ -4,6 +4,8 @@ const path = require("path");
 
 const app = express();
 
+const db = require('./util/database');
+
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({extended: false}));
