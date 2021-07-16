@@ -1,70 +1,29 @@
-const fs = require("fs");
-const path = require("path");
+const db = require("../util/database");
 
 const Cart = require("./cart");
 
-const p = path.join(
-  path.dirname(require.main.filename),
-  "data",
-  "products.json"
-);
-
-const getProductsFromFile = (cb) => {
-  fs.readFile(p, (err, fileContent) => {
-    if (err) {
-      return cb([]);
-    }
-    return cb(JSON.parse(fileContent));
-  });
-};
-
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
-    this.id = Math.random().toString();
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
   }
 
-  save(id) {
-    getProductsFromFile((products) => {
-      if (id) {
-        this.id = id;
-        const existingProductIndex = products.findIndex(
-          (p) => p.id === this.id
-        );
-        console.log(existingProductIndex, id);
-        products[existingProductIndex] = this;
-      } else {
-        products.push(this);
-      }
-      fs.writeFile(p, JSON.stringify(products), (err) => {
-        console.log(err);
-      });
-    });
+  save() {
+    return db.execute(
+      "INSERT INTO products (title, price, image_url, description) VALUES (?, ?, ?, ?)",
+      [this.title, this.price, this.imageUrl, this.description]
+    );
   }
 
-  static deleteById(id) {
-    getProductsFromFile((products) => {
-      if (id) {
-        const product = products.find(prod => prod.id === id);
-        const updatedProducts = products.filter((p) => p.id !== id);
-        fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
-          if (!err) {
-            Cart.deleteProduct(id, product.price);
-          }
-        });
-      }
-    });
-  }
-  static fetchAll(cb) {
-    getProductsFromFile(cb);
+  static deleteById() {}
+  static fetchAll() {
+    return db.execute("SELECT * FROM products");
   }
 
-  static getProductById(id, cb) {
-    getProductsFromFile((products) => {
-      cb(products.find((p) => p.id === id));
-    });
+  static getProductById(id) {
+    return db.execute("SELECT * FROM products WHERE products.id = ?", [id]);
   }
 };
