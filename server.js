@@ -10,8 +10,12 @@ const sequelize = require("./util/database");
 
 const Product = require("./models/product");
 const User = require("./models/user");
+
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 // View Engine
 app.set("view engine", "ejs");
@@ -42,30 +46,36 @@ app.use(errorRoutes);
 
 // Association
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
-User.hasMany(Product); // optional
+User.hasMany(Product);
 
 User.hasOne(Cart);
-Cart.belongsTo(User); // optional
+Cart.belongsTo(User);
 
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
+Order.belongsTo(User);
+User.hasMany(Order);
+
+Order.belongsToMany(Product, { through: OrderItem });
+
 sequelize
-  // .sync({force: true})
+  // .sync({ force: true })
   .sync()
   .then((r) => {
     return User.findByPk(1);
   })
   .then((user) => {
     if (!user) {
-      User.create({
+      return User.create({
         name: "Peter",
         email: "peter@peter.com",
       });
     }
-    return Promise.resolve(user); // The Promise.resolve() method can be omitted
+    
+    return user;
   })
-  .then(user => {
+  .then((user) => {
     return user.createCart();
   })
   .then(() => {
