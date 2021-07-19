@@ -14,14 +14,12 @@ exports.postAddProduct = (req, res) => {
   const description = req.body.description;
   const price = req.body.price;
 
-  const product = new Product(null, title, imageUrl, description, price);
-  product
-    .save()
-    .then(() => {
-      res.redirect("/")
-    })
-    .catch(err => console.log(err));
-  ;
+  Product.create({
+    title: title,
+    price: price,
+    imageUrl: imageUrl,
+    description: description,
+  }).then(r => {console.log("Created a Product")}).catch(e => console.log(e));
 };
 
 exports.getEditProduct = (req, res) => {
@@ -34,17 +32,20 @@ exports.getEditProduct = (req, res) => {
   const productId = req.params.productId;
 
   Product.getProductById(productId)
-  .then(([rows]) => {
-    if (!rows) {
-      return res.redirect("/");
-    }
-    res.render("admin/edit-product", {
-      pageTitle: "Edit Product",
-      path: "/admin/edit-product",
-      editing: editMode,
-      product: rows,
+    .then(([rows]) => {
+      if (!rows) {
+        return res.redirect("/");
+      }
+      res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: rows,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
     });
-  }).catch(err => {console.log(err)});
 };
 
 exports.postEditProduct = (req, res) => {
