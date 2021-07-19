@@ -58,11 +58,13 @@ exports.postEditProduct = (req, res) => {
       product.imageUrl = req.body.imageUrl;
       product.description = req.body.description;
 
-      product.save();
-      
-      res.redirect("/admin/products");
+      return product.save();
+    })
+    .then(result => {
+      console.log("Updated product");
     })
     .catch((e) => console.log(e));
+    res.redirect("/admin/products");
 };
 
 exports.postDeleteProduct = (req, res) => {
