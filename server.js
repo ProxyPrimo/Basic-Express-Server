@@ -63,10 +63,12 @@ sequelize
         email: "peter@peter.com",
       });
     }
-    return Promise.resolve(user);
+    return Promise.resolve(user); // The Promise.resolve() method can be omitted
   })
-  .then((user) => {
-    console.log(user);
+  .then(user => {
+    return user.createCart();
+  })
+  .then(() => {
     app.listen(3000);
   })
   .catch((e) => {
