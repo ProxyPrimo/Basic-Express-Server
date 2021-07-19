@@ -9,17 +9,13 @@ exports.getAddProduct = (req, res) => {
 };
 
 exports.postAddProduct = (req, res) => {
-  const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
-  const description = req.body.description;
-  const price = req.body.price;
-
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description,
-  })
+  req.user
+    .createProduct({
+      title: req.body.title,
+      price: req.body.price,
+      imageUrl: req.body.imageUrl,
+      description: req.body.description,
+    })
     .then((r) => {
       console.log("Created a Product");
       res.redirect("/admin/products");
@@ -34,9 +30,14 @@ exports.getEditProduct = (req, res) => {
     return res.redirect("/");
   }
 
-  const productId = req.params.productId;
-  Product.findByPk(productId)
-    .then((product) => {
+  req.user
+    .getProducts({
+      where: {
+        id: req.params.productId,
+      },
+    })
+    .then((products) => {
+      const product = products[0];
       if (!product) {
         return res.redirect("/");
       }
@@ -81,7 +82,8 @@ exports.postDeleteProduct = (req, res) => {
 };
 
 exports.getProducts = (req, res) => {
-  Product.findAll()
+  req.user
+    .getProducts()
     .then((products) => {
       res.render("admin/products", {
         products: products,
