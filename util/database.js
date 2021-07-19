@@ -1,10 +1,6 @@
-const mysql = require("mysql2");
+const Sequelize = require("sequelize"); // It's with a capital letter because we're importing a constructor.
 
-const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'product_shop' 
+module.exports = new Sequelize("product_shop", "root", "root", {
+  dialect: "mysql",
+  host: "localhost",
 });
-
-module.exports = pool.promise();
