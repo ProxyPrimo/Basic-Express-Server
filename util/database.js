@@ -1,8 +1,15 @@
-const {Sequelize} = require("sequelize"); // It's with a capital letter because we're importing a constructor.
+const mongodb = require("mongodb");
+const MongoClient = mongodb.MongoClient;
 
-const sequelize = new Sequelize("product_shop", "root", "root", {
-  dialect: "mysql",
-  host: "localhost",
-});
+const mongoConnect = (cb) => {
+  MongoClient.connect(
+    "mongodb+srv://mongo:mongo@cluster0.y7y4t.mongodb.net/test?retryWrites=true&w=majority"
+  )
+    .then((result) => {
+      console.log('Connected');
+      cb(result);
+    })
+    .catch((err) => console.log(err));
+};
 
-module.exports = sequelize;
+module.exports = mongoConnect;
