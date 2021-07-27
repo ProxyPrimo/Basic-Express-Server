@@ -6,7 +6,7 @@ const path = require("path");
 const app = express();
 
 // Database configurations
-const mongoConnect = require("./util/database");
+const mongoConnect = require("./util/database").mongoConnect;
 
 // const Product = require("./models/product");
 // const User = require("./models/user");
@@ -25,20 +25,18 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Auto-generated User
 app.use((req, res, next) => {
-
+  next();
 });
 
-
 // Routes
-// const adminRoutes = require("./routes/admin");
-// const shopRoutes = require("./routes/shop");
-// const errorRoutes = require("./routes/error");
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+const errorRoutes = require("./routes/error");
 
-// app.use("/admin", adminRoutes);
-// app.use(shopRoutes);
-// app.use(errorRoutes);
+app.use("/admin", adminRoutes);
+app.use(shopRoutes);
+app.use(errorRoutes);
 
-mongoConnect(client => {
-    console.log(client);
-    app.listen(3000);
+mongoConnect(() => {
+  app.listen(3000);
 });
